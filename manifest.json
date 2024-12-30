@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "PlanningPod Tools",
+  "version": "1.0",
+  "description": "Adds helpful features to PlanningPod",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.planningpod.com/*"],
+      "js": ["contentScript.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
