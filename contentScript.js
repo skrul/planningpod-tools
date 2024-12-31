@@ -129,16 +129,47 @@ function addLinkIcons() {
   }
 }
 
+function addNewTabLinks() {
+  // Find all links with loadLocation class
+  const loadLocationLinks = document.querySelectorAll('a.loadLocation');
+  
+  for (const link of loadLocationLinks) {
+    // Skip if we've already added a new tab link
+    if (link.nextElementSibling?.classList.contains('pp-link-icon')) continue;
+    
+    // Get the data-location attribute
+    const location = link.getAttribute('data-location');
+    if (!location) continue;
+
+    // Create the JSON object and encode it
+    const routeObj = { to: location };
+    const encodedRoute = btoa(JSON.stringify(routeObj));
+    
+    // Create link element
+    const newTabLink = document.createElement('a');
+    newTabLink.href = `?${encodedRoute}`;
+    newTabLink.target = '_blank';
+    newTabLink.className = 'pp-link-icon';
+    newTabLink.title = 'Open in new tab';
+    newTabLink.innerHTML = '&nbsp;🔗';
+    
+    // Insert the new link after the original link
+    link.parentNode.insertBefore(newTabLink, link.nextSibling);
+  }
+}
+
 // Run when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   addLinkIcons();
   addExportButton();
+  addNewTabLinks();
 });
 
 // Also run when content is updated via AJAX
 const observer = new MutationObserver(() => {
   addLinkIcons();
   addExportButton();
+  addNewTabLinks();
 });
 
 observer.observe(document.body, {
