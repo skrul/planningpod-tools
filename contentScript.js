@@ -107,18 +107,9 @@ function addLinkIcons() {
     const location = targetCell.getAttribute('data-location');
     if (!location) continue;
 
-    // Create the JSON object and encode it
-    const routeObj = { to: location };
-    const encodedRoute = btoa(JSON.stringify(routeObj));
-    
     // Create link element
-    const link = document.createElement('a');
-    link.href = `?${encodedRoute}`;
-    link.target = '_blank';
-    link.className = 'pp-link-icon';
-    link.title = 'Open in new tab';
-    link.innerHTML = '&nbsp;🔗';
-    
+    const link = makeLink(location);
+
     // Prevent the original onclick from firing when clicking our link
     link.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -137,10 +128,19 @@ function addNewTabLinks() {
     // Skip if we've already added a new tab link
     if (link.nextElementSibling?.classList.contains('pp-link-icon')) continue;
     
+    // Skip if this is a nav menu item
+    if (link.querySelector('span.nav-item-text')) continue;
+    
     // Get the data-location attribute
     const location = link.getAttribute('data-location');
     if (!location) continue;
 
+    // Insert the new link after the original link
+    link.parentNode.insertBefore(makeLink(location), link.nextSibling);
+  }
+}
+
+function makeLink(location) {
     // Create the JSON object and encode it
     const routeObj = { to: location };
     const encodedRoute = btoa(JSON.stringify(routeObj));
@@ -152,10 +152,7 @@ function addNewTabLinks() {
     newTabLink.className = 'pp-link-icon';
     newTabLink.title = 'Open in new tab';
     newTabLink.innerHTML = '&nbsp;🔗';
-    
-    // Insert the new link after the original link
-    link.parentNode.insertBefore(newTabLink, link.nextSibling);
-  }
+    return newTabLink;
 }
 
 // Run when the page loads
